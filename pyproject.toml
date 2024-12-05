@@ -1,0 +1,82 @@
+[project]
+name = "minecraft-rcon-bot"
+version = "1.0"
+description = ""
+readme = "README.md"
+requires-python = ">=3.11,<3.13"
+dependencies = [
+    "aiogram~=3.15.0",
+    "pydantic-settings>=2.6.1",
+    "pydantic>=2.9.2",
+    "msgspec>=0.18.6",
+    "aiogram-contrib>=1.1.2",
+    "aio-mc-rcon>=3.2.2",
+]
+
+[tool.uv]
+dev-dependencies = [
+    "mypy~=1.12.0",
+    "black~=24.10.0",
+    "ruff~=0.7.1",
+]
+
+[tool.black]
+line-length = 99
+exclude = "\\.?venv|\\.?tests"
+
+[tool.ruff]
+target-version = "py38"
+line-length = 99
+lint.select = [
+    "C",
+    "DTZ",
+    "E",
+    "F",
+    "I",
+    "ICN",
+    "ISC",
+    "N",
+    "PLC",
+    "PLE",
+    "Q",
+    "T",
+    "W",
+    "YTT",
+]
+exclude = [
+    ".venv",
+    ".idea",
+    ".tests",
+]
+
+[tool.mypy]
+plugins = ["pydantic.mypy"]
+exclude = [
+    "venv",
+    ".venv",
+    ".idea",
+    ".tests",
+]
+warn_unused_configs = true
+disallow_any_generics = true
+disallow_subclassing_any = true
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+warn_unused_ignores = true
+warn_return_any = true
+no_implicit_reexport = true
+strict_equality = true
+extra_checks = true
+
+[[tool.mypy.overrides]]
+module = ["aiomcrcon.*"]
+ignore_missing_imports = true
+disallow_untyped_defs = false
+
+[[tool.mypy.overrides]]
+module = ["app.telegram.handlers.*"]
+strict_optional = false
+warn_return_any = false
