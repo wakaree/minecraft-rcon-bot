@@ -25,6 +25,12 @@ class RconConfig(EnvSettings, env_prefix="RCON_"):
     password: SecretStr
 
 
+class WhiteListConfig(EnvSettings, env_prefix="WHITELIST_"):
+    add_command: str
+    remove_command: str
+
+
 class AppConfig(EnvSettings):
     telegram: TelegramConfig
     rcon: RconConfig
+    whitelist: WhiteListConfig

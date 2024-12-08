@@ -6,7 +6,7 @@ from aiogram.filters import MagicData
 from app.models.config import AppConfig
 from app.services.database import Database
 from app.services.rcon import RCONClient
-from app.telegram.handlers import lifespan, rcon, start, username, whitelist
+from app.telegram.handlers import lifespan, nickname, rcon, start, whitelist
 from app.telegram.middlewares.user import UserMiddleware
 
 
@@ -24,7 +24,7 @@ def create_dispatcher(config: AppConfig) -> Dispatcher:
     dispatcher.include_routers(
         rcon.router,
         start.router,
-        username.router,
+        nickname.router,
         whitelist.router,
         lifespan.router,
     )

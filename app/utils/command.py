@@ -39,6 +39,16 @@ def wrap_command(
     message: Message,
     database: Database,
 ) -> str:
+    if (
+        message.reply_to_message is not None
+        and message.reply_to_message.from_user is not None
+        and "$r" in command
+    ):
+        command = set_nickname(
+            command=command,
+            target="$r",
+            user=database.get_user(message.reply_to_message.from_user.id),
+        )
     for mention in extract_mentions(message):
         if isinstance(mention, MentionedUser):
             command = set_nickname(

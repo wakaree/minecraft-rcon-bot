@@ -1,5 +1,54 @@
-from typing import Final
+from typing import Any, Final, Optional
 
 from aiogram import Router
+from aiogram.filters import Command
+from aiogram.types import Message, User
+
+from app.controllers.user import whitelist
+from app.models.config import AppConfig
+from app.models.dto.user import UserDto
+from app.services.database import Database
+from app.services.rcon import RCONClient
+from app.telegram.filters.whitelist import WhitelistCommandFilter
+from app.telegram.helpers.text import answer_usage
 
 router: Final[Router] = Router(name=__name__)
+
+
+@router.message(WhitelistCommandFilter())
+async def whitelist_user(
+    message: Message,
+    action: str,
+    nickname: Optional[str],
+    database: Database,
+    rcon: RCONClient,
+    config: AppConfig,
+) -> Any:
+    aiogram_user: User = message.reply_to_message.from_user
+    try:
+        user: UserDto = whitelist(
+            user_id=aiogram_user.id,
+            username=aiogram_user.username,
+            nickname=nickname,
+            add=action == "add",
+            database=database,
+            rcon=rcon,
+            config=config,
+        )
+    except ValueError:
+        return message.answer("<b>❌ Error »</b> <code>Missing player nickname</code>")
+    return message.answer(
+        text="<b>✉️ Whitelist »</b> <code>{nickname}</code> is now {whitelisted}".format(
+            nickname=user.nickname,
+            whitelisted="✅ whitelisted" if user.whitelisted else "❌ not whitelisted",
+        )
+    )
+
+
+@router.message(Command("whitelist"))
+async def answer_whitelist_usage(message: Message) -> Any:
+    return answer_usage(
+        message=message,
+        command="whitelist [add/del] [optional:nickname]",
+        must_reply=True,
+    )

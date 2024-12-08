@@ -16,7 +16,7 @@ def format_response(command: str, response: str) -> str:
     cmd_string: str = dedent(
         """
         <b>💻 Command »</b>
-        <pre><code class="language-minecraft">{command}</code></pre>
+        <pre><code>{command}</code></pre>
         """
     )
     if not response:
