@@ -4,7 +4,7 @@ from aiogram import Bot, Router, loggers
 from aiogram.types import BotCommand
 
 from app.models.config import AppConfig
-from app.services.rcon import RCONClient
+from app.services.database import Database
 
 router: Final[Router] = Router(name=__name__)
 
@@ -18,16 +18,17 @@ async def polling_startup(bots: list[Bot], config: AppConfig) -> None:
 
 
 @router.startup()
-async def startup(rcon: RCONClient, bot: Bot) -> None:
+async def startup(bot: Bot, database: Database) -> None:
+    database.startup()
     await bot.set_my_commands(
         commands=[
             BotCommand(command="rcon", description="Execute RCON command"),
             BotCommand(command="whitelist", description="Manage whitelist"),
         ],
     )
-    await rcon.client.connect()
 
 
 @router.shutdown()
-async def shutdown(rcon: RCONClient) -> None:
-    await rcon.client.close()
+async def shutdown(database: Database) -> None:
+    database.shutdown()
+    loggers.dispatcher.info("Database connection closed")

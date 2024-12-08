@@ -5,7 +5,7 @@ package_dir := app
 # Reformat code
 .PHONY: reformat
 reformat:
-	@uv run black $(project_dir)
+	@uv run ruff format $(project_dir)
 	@uv run ruff check $(project_dir) --fix
 
 # Lint code

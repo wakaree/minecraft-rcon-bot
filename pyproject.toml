@@ -10,13 +10,12 @@ dependencies = [
     "pydantic>=2.9.2",
     "msgspec>=0.18.6",
     "aiogram-contrib>=1.1.2",
-    "aio-mc-rcon>=3.2.2",
+    "mcrcon>=0.7.0",
 ]
 
 [tool.uv]
 dev-dependencies = [
     "mypy~=1.12.0",
-    "black~=24.10.0",
     "ruff~=0.7.1",
 ]
 
@@ -34,7 +33,6 @@ lint.select = [
     "F",
     "I",
     "ICN",
-    "ISC",
     "N",
     "PLC",
     "PLE",
@@ -72,7 +70,7 @@ strict_equality = true
 extra_checks = true
 
 [[tool.mypy.overrides]]
-module = ["aiomcrcon.*"]
+module = ["mcrcon.*"]
 ignore_missing_imports = true
 disallow_untyped_defs = false
 

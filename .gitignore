@@ -3,6 +3,7 @@
 .vscode/
 .code-workspace
 data/*
+.db
 
 # Environment
 .venv/

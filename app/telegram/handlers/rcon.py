@@ -5,7 +5,9 @@ from aiogram import Router, html
 from aiogram.filters import Command, CommandObject
 from aiogram.types import Message
 
+from app.services.database import Database
 from app.services.rcon import RCONClient
+from app.utils.command import wrap_command
 
 router: Final[Router] = Router(name=__name__)
 
@@ -29,8 +31,10 @@ async def send_rcon_command(
     message: Message,
     command: CommandObject,
     rcon: RCONClient,
+    database: Database,
 ) -> Any:
     if command.args is None:
         return message.answer(text="<b>❓ Usage »</b> <code>/rcon [command]</code>")
-    response: str = await rcon.execute_command(command.args)
-    return message.answer(text=format_response(command.args, response))
+    wrapped: str = wrap_command(command=command.args, message=message, database=database)
+    response: str = rcon.execute_command(wrapped)
+    return message.answer(text=format_response(wrapped, response))

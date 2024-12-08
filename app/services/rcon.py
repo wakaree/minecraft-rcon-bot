@@ -1,29 +1,18 @@
-from types import TracebackType
-from typing import Optional, Self, cast
+from typing import cast
 
-from aiomcrcon.client import Client
+from mcrcon import MCRcon
 
 
 class RCONClient:
     def __init__(self, host: str, port: int, password: str) -> None:
-        self.client = Client(
-            host=host,
-            port=port,
-            password=password,
-        )
+        self.host = host
+        self.port = port
+        self.password = password
 
-    async def execute_command(self, command: str) -> str:
-        response, code = await self.client.send_cmd(command)
-        return cast(str, response)
-
-    async def __aenter__(self) -> Self:
-        await self.client.connect()
-        return self
-
-    async def __aexit__(
-        self,
-        exc_type: Optional[type[BaseException]],
-        exc_value: Optional[BaseException],
-        traceback: Optional[TracebackType],
-    ) -> None:
-        await self.client.close()
+    def execute_command(self, command: str) -> str:
+        with MCRcon(
+            host=self.host,
+            port=self.port,
+            password=self.password,
+        ) as rcon:
+            return cast(str, rcon.command(command))
