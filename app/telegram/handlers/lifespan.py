@@ -24,6 +24,7 @@ async def startup(bot: Bot, database: Database) -> None:
         commands=[
             BotCommand(command="rcon", description="Execute RCON command"),
             BotCommand(command="whitelist", description="Manage whitelist"),
+            BotCommand(command="nickname", description="Attach in-game nickname to user"),
         ],
     )
 

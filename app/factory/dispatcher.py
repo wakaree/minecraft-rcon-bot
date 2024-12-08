@@ -22,11 +22,11 @@ def create_dispatcher(config: AppConfig) -> Dispatcher:
         database=Database(),
     )
     dispatcher.include_routers(
-        rcon.router,
         start.router,
+        lifespan.router,
         nickname.router,
         whitelist.router,
-        lifespan.router,
+        rcon.router,
     )
     dispatcher.message.filter(MagicData(F.event_from_user.id.in_(F.config.telegram.admins)))
     dispatcher.update.outer_middleware(UserMiddleware())

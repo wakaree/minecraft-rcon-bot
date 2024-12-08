@@ -1,12 +1,13 @@
 from textwrap import dedent
 from typing import Any, Final
 
-from aiogram import Router, html
-from aiogram.filters import Command, CommandObject
+from aiogram import F, Router, html
+from aiogram.filters import Command
 from aiogram.types import Message
 
 from app.services.database import Database
 from app.services.rcon import RCONClient
+from app.telegram.helpers.text import answer_usage
 from app.utils.command import wrap_command
 
 router: Final[Router] = Router(name=__name__)
@@ -26,15 +27,32 @@ def format_response(command: str, response: str) -> str:
     return cmd_string.format(command=command, response=html.quote(response))
 
 
-@router.message(Command("rcon"))
+@router.message(Command("rcon", magic=F.args.as_("command")))
 async def send_rcon_command(
     message: Message,
-    command: CommandObject,
+    command: str,
     rcon: RCONClient,
     database: Database,
 ) -> Any:
-    if command.args is None:
-        return message.answer(text="<b>❓ Usage »</b> <code>/rcon [command]</code>")
-    wrapped: str = wrap_command(command=command.args, message=message, database=database)
+    wrapped: str = wrap_command(command=command, message=message, database=database)
     response: str = rcon.execute_command(wrapped)
     return message.answer(text=format_response(wrapped, response))
+
+
+@router.message(Command("rcon"))
+async def answer_rcon_usage(message: Message) -> Any:
+    return answer_usage(message=message, command="rcon [command]")
+
+
+@router.message(F.text.startswith("/"))
+async def send_rcon_command_from_text(
+    message: Message,
+    rcon: RCONClient,
+    database: Database,
+) -> Any:
+    return await send_rcon_command(
+        message=message,
+        command=message.text[1:],
+        rcon=rcon,
+        database=database,
+    )
