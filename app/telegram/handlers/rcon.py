@@ -1,14 +1,18 @@
+from __future__ import annotations
+
 from textwrap import dedent
-from typing import Any, Final
+from typing import TYPE_CHECKING, Any, Final
 
 from aiogram import F, Router, html
 from aiogram.filters import Command
 from aiogram.types import Message
 
-from app.services.database import Database
-from app.services.rcon import RCONClient
 from app.telegram.helpers.text import answer_usage
 from app.utils.command import wrap_command
+
+if TYPE_CHECKING:
+    from app.services.database import Database
+    from app.services.rcon import RCONClient
 
 router: Final[Router] = Router(name=__name__)
 

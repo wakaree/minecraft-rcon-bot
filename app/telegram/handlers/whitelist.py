@@ -1,16 +1,20 @@
-from typing import Any, Final, Optional
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Final, Optional
 
 from aiogram import Router
 from aiogram.filters import Command
 from aiogram.types import Message, User
 
 from app.controllers.user import whitelist
-from app.models.config import AppConfig
-from app.models.dto.user import UserDto
-from app.services.database import Database
-from app.services.rcon import RCONClient
 from app.telegram.filters.whitelist import WhitelistCommandFilter
 from app.telegram.helpers.text import answer_usage
+
+if TYPE_CHECKING:
+    from app.models.config import AppConfig
+    from app.models.dto.user import UserDto
+    from app.services.database import Database
+    from app.services.rcon import RCONClient
 
 router: Final[Router] = Router(name=__name__)
 

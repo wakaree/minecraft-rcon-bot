@@ -1,10 +1,13 @@
-from typing import Final
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Final
 
 from aiogram import Bot, Router, loggers
 from aiogram.types import BotCommand
 
-from app.models.config import AppConfig
-from app.services.database import Database
+if TYPE_CHECKING:
+    from app.models.config import AppConfig
+    from app.services.database import Database
 
 router: Final[Router] = Router(name=__name__)
 

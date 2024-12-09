@@ -1,9 +1,14 @@
-from typing import Optional
+from __future__ import annotations
 
-from app.models.config import AppConfig
+from typing import TYPE_CHECKING, Optional, cast
+
+from app.controllers.rcon import add_to_whitelist, remove_from_whitelist
 from app.models.dto.user import UserDto
-from app.services.database import Database
-from app.services.rcon import RCONClient
+
+if TYPE_CHECKING:
+    from app.models.config import AppConfig
+    from app.services.database import Database
+    from app.services.rcon import RCONClient
 
 
 def update_nickname(
@@ -12,12 +17,18 @@ def update_nickname(
     username: Optional[str] = None,
     nickname: str,
     database: Database,
+    rcon: RCONClient,
+    config: AppConfig,
 ) -> tuple[Optional[str], str]:
     user: Optional[UserDto] = database.get_user(user_id=user_id)
     if user is None:
         user = UserDto(id=user_id, username=username)
     old_nickname: Optional[str] = user.nickname
     user.nickname = nickname
+    if user.whitelisted:
+        if old_nickname is not None:
+            remove_from_whitelist(nickname=old_nickname, rcon=rcon, config=config)
+        add_to_whitelist(nickname=user.nickname, rcon=rcon, config=config)
     database.set_user(user)
     return old_nickname, nickname
 
@@ -41,8 +52,8 @@ def whitelist(
         user.nickname = nickname
     user.whitelisted = add
     if add:
-        rcon.execute_command(config.whitelist.add_command.format(user.nickname))
+        add_to_whitelist(nickname=cast(str, user.nickname), rcon=rcon, config=config)
     else:
-        rcon.execute_command(config.whitelist.remove_command.format(user.nickname))
+        remove_from_whitelist(nickname=cast(str, user.nickname), rcon=rcon, config=config)
     database.set_user(user)
     return user
