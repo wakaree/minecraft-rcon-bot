@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Any, Final, Optional
 
 from aiogram import Router
 from aiogram.filters import Command
-from aiogram.types import Message, User
+from aiogram.types import Message, User, LinkPreviewOptions
 
 from app.controllers.user import whitelist
 from app.telegram.filters.whitelist import WhitelistCommandFilter
@@ -57,15 +57,14 @@ async def show_whitelisted_users(message: Message, database: Database) -> Any:
     return message.answer(
         text="<b>📋 Whitelisted users »</b>\n{users}".format(
             users="\n".join(
-                """
-                - <code>{nickname}</code> (<a href="t.me/{username}">@{username}</a>)
-                """.format(
+                '- <code>{nickname}</code> (<a href="t.me/{username}">@{username}</a>)'.format(
                     nickname=user.nickname,
                     username=user.username,
                 )
                 for user in users
             ),
-        )
+        ),
+        link_preview_options=LinkPreviewOptions(is_disabled=True),
     )
 
 
