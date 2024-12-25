@@ -22,8 +22,8 @@ class RCONClient:
         ) as rcon:
             response: str = remove_minecraft_colors(text=rcon.command(command))
             logger.info(
-                ("Executed command » %s\nResponse » %s"),
+                ("Executed command » %s%s"),
                 command,
-                response,
+                f"\nResponse »{response}" if response else "",
             )
             return response

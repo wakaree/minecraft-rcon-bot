@@ -57,7 +57,9 @@ async def show_whitelisted_users(message: Message, database: Database) -> Any:
     return message.answer(
         text="<b>📋 Whitelisted users »</b>\n{users}".format(
             users="\n".join(
-                "- <code>{nickname}</code> (@{username})".format(
+                """
+                - <code>{nickname}</code> (<a href="t.me/{username}">@{username}</a>)
+                """.format(
                     nickname=user.nickname,
                     username=user.username,
                 )
