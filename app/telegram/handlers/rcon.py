@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import re
 from textwrap import dedent
 from typing import TYPE_CHECKING, Any, Final
 
 from aiogram import F, Router, html
+from aiogram.dispatcher.event.bases import UNHANDLED
 from aiogram.filters import Command
 from aiogram.types import Message
 
@@ -54,6 +56,8 @@ async def send_rcon_command_from_text(
     rcon: RCONClient,
     database: Database,
 ) -> Any:
+    if re.fullmatch(r"/\w+@.+", message.text):
+        return UNHANDLED
     return await send_rcon_command(
         message=message,
         command=message.text[1:],
