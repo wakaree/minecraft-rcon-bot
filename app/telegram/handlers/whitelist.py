@@ -49,6 +49,27 @@ async def whitelist_user(
     )
 
 
+@router.message(Command("whitelisted"))
+async def show_whitelisted_users(
+    message: Message,
+    database: Database,
+) -> Any:
+    users: list[UserDto] = database.get_whitelisted()
+    if not users:
+        return message.answer("<b>❌ Error »</b> <code>No whitelisted users</code>")
+    return message.answer(
+        text="<b>📋 Whitelisted users »</b>\n{users}".format(
+            users="\n".join(
+                "<code>{nickname}</code> ({username})".format(
+                    nickname=user.nickname,
+                    username=user.username,
+                )
+                for user in users
+            ),
+        )
+    )
+
+
 @router.message(Command("whitelist"))
 async def answer_whitelist_usage(message: Message) -> Any:
     return answer_usage(
