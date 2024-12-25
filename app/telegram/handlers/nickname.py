@@ -35,6 +35,14 @@ async def set_nickname(
         rcon=rcon,
         config=config,
     )
+    if old_nickname is None:
+        return message.answer(
+            text="<b>👤 Attached <code>{nickname}</code> to {user}".format(
+                nickname=nickname,
+                user=aiogram_user.mention_html(),
+            ),
+        )
+
     return message.answer(
         text="<b>👤 Nickname »</b> <code>{old}</code> → <code>{new}</code>".format(
             old=old_nickname,

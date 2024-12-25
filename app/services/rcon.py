@@ -1,6 +1,11 @@
-from typing import cast
+import logging
+from typing import Final
 
 from mcrcon import MCRcon
+
+from app.utils.text import remove_minecraft_colors
+
+logger: Final[logging.Logger] = logging.getLogger(name=__name__)
 
 
 class RCONClient:
@@ -15,4 +20,10 @@ class RCONClient:
             port=self.port,
             password=self.password,
         ) as rcon:
-            return cast(str, rcon.command(command))
+            response: str = remove_minecraft_colors(text=rcon.command(command))
+            logger.info(
+                ("Executed command » %s\nResponse » %s"),
+                command,
+                response,
+            )
+            return response
